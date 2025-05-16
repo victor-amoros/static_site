@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode
+from htmlnode import HTMLNode, LeafNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -49,6 +49,24 @@ class TestHTMLNode(unittest.TestCase):
             "HTMLNode(p, What a strange world, children: None, {'class': 'primary'})",
         )
 
+    def test_leaf_to_html_p(self):
+        node = LeafNode("p", "Hello, world!")
+        self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
+
+    def test_leaf_to_html_a(self):
+        node = LeafNode("a", "Hello, world!", {"href": "https://www.google.com"})
+        self.assertEqual(node.to_html(), "<a href=\"https://www.google.com\">Hello, world!</a>")
+
+    def test_leaf_to_html_err(self):
+        node = LeafNode("a",None)
+        with self.assertRaises(ValueError) as cm:
+            node.to_html()
+        self.assertEqual(str(cm.exception), "invalid HTML: no value")
+
+    def test_leaf_to_html_notag(self):
+        node = LeafNode(None, "Text with no tag")
+        self.assertEqual("Text with no tag", node.to_html())
 
 if __name__ == "__main__":
     unittest.main()
+
